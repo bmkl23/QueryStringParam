@@ -3,139 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blank_web_page</title>
-    <link rel="stylesheet" href="QR.css">
-    <script src="QR.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Query Parameters Display</title>
 </head>
+
 <body>
+    <h1>Query Parameters</h1>
+    <ul id="ParametersAsAlist"></ul>
 
-<div class="MainDiv">
-    <div>
-        <nav class="NavBar">
-            <p>You're At : <span id="theName" class="BusLocation">Nugegoda</span></p>
-        </nav>
-    </div>  
+    <script>
+        // Function to parse query parameters and return as an object
 
-    <div class="Iconsss">
-        <p onclick="location.reload()" class="refresh"><i id="refresh" style="font-size:20px" class="fa">&#xf01e;</i></p> <br>
-        <p id="sortingButton" class="Sorting" onclick="sortBusCards()"><i style="font-size: 20px;" class="fa fa-sort-amount-desc" aria-hidden="true"></i></p>
-    </div> <br><br>
-
-    <div id="busCardsContainer"></div>
-
-    <div>
-        <footer class="AdvertismentImage">
-            <img src="/home/bmkl/QR Page/Advetisment.jpg" alt="NimbusImage">
-        </footer>
-    </div>
-</div>
-
-<script> 
-
-
-
-    let busData = [];       
-
-// MODIFIED FUNCTION TO GET MORE THAN ONE  QUERY STRING PARAMETERS 
-
-function getQueryParams() {
-    const params = new URLSearchParams(window.location.search);
-
-    let MultipleQueryParams = {};
-    params.forEach((value, key) => {
-        MultipleQueryParams[key] = value;
-    });
-    return MultipleQueryParams;
-}
-
-const params = getQueryParams();
-
-    if (stopId) {
-    fetch(`https://development.nimbusventure.com/bms-solution/v1/qr/stop-location/${stopId}`)
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                // Log the error message and throw an error to be caught by the catch block
-                console.error(`Error: ${response.status}`);
-               
-            }  
-        })
-        .then(data => {
-            busData = data.map(bus => {
-                bus.scheduledTimeFormatted = new Date(bus.plannedArrivalTime).toLocaleTimeString().slice(0, 5);
-                bus.etaTimeFormatted = new Date(Date.now() + bus.eta).toLocaleTimeString().slice(0, 5);
-                bus.latestTimeFormatted = new Date(Date.now() + bus.latestEta).toLocaleTimeString().slice(0, 5);
-                return bus;
+        function getMultipleQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            let queryParams = {};
+            params.forEach((value, key) => {
+                queryParams[key] = value;
             });
-            generateBusCards(busData);
-        })
-        .catch(error => {
-            // Log any errors that occurred during the fetch or data processing
-            console.error(`Fetch error: ${error.message}`);
-        });
-} else {
-    console.error("URL Path Parameter is not defined");
-}
+            return queryParams;
+        }
 
-    //..........................................................................................................
+        const params = getMultipleQueryParams();
 
-    function generateBusCards(data) {
-        const busCardsContainer = document.getElementById("busCardsContainer");
-        busCardsContainer.innerHTML = "";  
-        data.forEach(bus => {
-            const busCard = document.createElement("div"); 
-            busCard.className = "busCard";
-            busCard.innerHTML = `
-                <div class="busDetails">
-                    <p style="font-weight: bold;">Route No : <span class="RoutNo">${bus.routeNumber}</span> <i style="float: right;" class="fa fa-bus"></i></p>
-                    <p>${bus.vehicleTurnStartLocation} To ${bus.vehicleTurnEndLocation}</p>
-                    <p class="VehilceID">${bus.vehicleId}</p>
-                </div>
-                <div>
-                    <p class="toYourLocation">&nbsp&nbsp&nbspTo your location</p>
-                </div>
-                <div class="busTimes">
-                    <div class="timeofBus">
-                        <div class="dotScheduled"></div>
-                        <div>
-                            <p class="scheduledTime">${bus.scheduledTimeFormatted}</p>
-                            <p class="scheduled">Scheduled</p>
-                        </div>
-                    </div>
-                    <div class="Line"></div>
-                    <div class="timeofBus">
-                        <div class="dotEta"></div>
-                        <div>
-                            <p class="EtaTime">${bus.etaTimeFormatted}</p>
-                            <p class="eta">ETA</p>
-                        </div>
-                    </div>
-                    <div class="Line"></div>
-                    <div class="timeofBus">
-                        <div class="dotLatest"></div>
-                        <div>
-                            <p class="LatestTime">${bus.latestTimeFormatted}</p>
-                            <p class="latest">Latest</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            busCardsContainer.appendChild(busCard);
-        });
-    }
-
-    //..........................................................................................................
-
-    function sortBusCards() {
-        busData.reverse(); 
-        generateBusCards(busData); 
-    }
-
-</script>
+        document.getElementById('ParametersAsAlist').innerHTML;
+        
+    </script>
 
 </body>
+
 </html>
-<!-- 
-     file:///home/bmkl/QR%20Page/QR.html?stop-id=2154e17a-d07d-4efe-b537-09a5f6e6dec6 -->
